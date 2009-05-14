@@ -39,43 +39,40 @@ Graphite.Controller = function() {
         }    
     };
 
-    $("#flot-root").css("height", "500px");
+    var clone = function(obj) { return $.extend(true, {}, obj); };
+
+    var history = [];
+
     var plot = $.plot($("#flot-root"), [model.data], plotOptions);    
 
-
-    $("#flot-root").bind("plotselected", function(event, ranges) {
-        selection = {};
-        selection.ranges = ranges;
-        selection.points = [];
-        for (i = 0; i < model.data.data.length; i++) {
-            var point = model.data.data[i];
-            var x = point[0]; var y = point[1];
-            if (x >= ranges.xaxis.from && x <= ranges.xaxis.to &&
-                y >= ranges.yaxis.from && y <= ranges.yaxis.to) {
-                // plot.highlight(0, i);
-                selection.points.push(point);
+    var bindHandlers = function() {
+        $("#flot-root").bind("plotselected", function(event, ranges) {
+            selection = {};
+            selection.ranges = ranges;
+            selection.points = [];
+            for (i = 0; i < model.data.data.length; i++) {
+                var point = model.data.data[i];
+                var x = point[0]; var y = point[1];
+                if (x >= ranges.xaxis.from && x <= ranges.xaxis.to &&
+                    y >= ranges.yaxis.from && y <= ranges.yaxis.to) {
+                    // plot.highlight(0, i);
+                    selection.points.push(point);
+                }
             }
-        }
-    });
+        });
 
-    $("#flot-root").bind("plotunselected", function(event) {
-        selection = null;
-        for (i = 0; i < model.data.data.length; i++) {
-            plot.unhighlight(0, i);
-        }
-    });
+        $("#flot-root").bind("plotunselected", function(event) {
+            selection = null;
+            for (i = 0; i < model.data.data.length; i++) {
+                plot.unhighlight(0, i);
+            }
+        });
 
-    $("#flot-root").bind("plotclick", function(event, pos, point) {
-        if (point) {
-            selection.points = [point];
-            plot.highlight(0, point);
-        } else {
+        $("#flot-root").bind("plotclick", function(event, pos, point) {
             self.addPoint([pos.x, pos.y]);
-            $.each(selection.points, function(i, n) {
-                plot.unhighlight(0, n);
-            });
-        }
-    });
+        });
+
+    };
 
     var updateTable = function() {
         $("#data-table tbody").empty();
@@ -106,6 +103,15 @@ Graphite.Controller = function() {
         plot.setData([model.data]);
         plot.setupGrid();
         plot.draw();
+    };
+
+    var saveState = function() {
+        var state = {
+            model: clone(model),
+            plotOptions: clone(model)
+        };
+        history.push(state);
+        console.log(history);
     };
 
     var updateAll = function() {
@@ -141,6 +147,14 @@ Graphite.Controller = function() {
             } else {
                 self.deleteAll();
             }
+        },
+        undo: function(kvs) {
+            if (history.length > 0) {
+                var state = history.pop();
+                model = state.model;
+                plotOptions = state.plotOptions;
+                updateAll();
+            }
         }
     };
 
@@ -153,21 +167,25 @@ Graphite.Controller = function() {
     };
 
     this.addPoint = function(p) {
+        saveState();
         model.addPoint(p);
         updateAll();
     };
 
     this.deleteAll = function() {
+        saveState();
         model.deleteAll();
         updateAll();
     };
 
     this.deletePoint = function(p) {
+        saveState();
         model.deletePoint(p);
         updateAll();
     };
 
     this.deletePoints = function(ps) {
+        saveState();
         model.deletePoints(ps);
         updateAll();
     };
@@ -184,6 +202,7 @@ Graphite.Controller = function() {
         plot = $.plot($("#flot-root"), [model.data], plotOptions);    
     };
 
+    bindHandlers();
     updateAll();
 
 };
