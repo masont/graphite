@@ -155,6 +155,12 @@ Graphite.Controller = function() {
                 plotOptions = state.plotOptions;
                 updateAll();
             }
+        },
+        invert: function(kvs) {
+            self.invert();
+        },
+        color: function(kvs) {
+
         }
     };
 
@@ -200,6 +206,15 @@ Graphite.Controller = function() {
         plotOptions.xaxis = { min: xmin, max: xmax };
         plotOptions.yaxis = { min: ymin, max: ymax };
         plot = $.plot($("#flot-root"), [model.data], plotOptions);    
+    };
+
+    this.invert = function() {
+        saveState();
+        $.each(model.data.data, function(i, n) {
+            var x = n[0]; var y = n[1];
+            model.data.data[i] = [n[1], n[0]];
+        });
+        updateAll();
     };
 
     bindHandlers();
