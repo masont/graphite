@@ -4,8 +4,8 @@ $(document).ready(function() {
 
     
     $("#add-row-form").submit(function() {
-        var x = $("#add-x").val();
-        var y = $("#add-y").val();
+        var x = parseFloat($("#add-x").val());
+        var y = parseFloat($("#add-y").val());
 
         graphiteController.addPoint([x, y]);
 
@@ -39,11 +39,10 @@ Graphite.Controller = function() {
         }    
     };
 
-    var clone = function(obj) { return $.extend(true, {}, obj); };
 
     var history = [];
 
-    var plot = $.plot($("#flot-root"), [model.data], plotOptions);    
+    var plot = $.plot($("#flot-root"), [model.data, model.fit], plotOptions); 
 
     var bindHandlers = function() {
         $("#flot-root").bind("plotselected", function(event, ranges) {
@@ -55,7 +54,6 @@ Graphite.Controller = function() {
                 var x = point[0]; var y = point[1];
                 if (x >= ranges.xaxis.from && x <= ranges.xaxis.to &&
                     y >= ranges.yaxis.from && y <= ranges.yaxis.to) {
-                    // plot.highlight(0, i);
                     selection.points.push(point);
                 }
             }
@@ -100,18 +98,18 @@ Graphite.Controller = function() {
     };
 
     var updatePlot = function() {
-        plot.setData([model.data]);
+        plot.setData([model.data, model.fit]);
         plot.setupGrid();
         plot.draw();
     };
 
     var saveState = function() {
+        var clone = function(obj) { return $.extend(true, {}, obj); };
         var state = {
             model: clone(model),
             plotOptions: clone(model)
         };
         history.push(state);
-        console.log(history);
     };
 
     var updateAll = function() {
@@ -121,8 +119,8 @@ Graphite.Controller = function() {
 
     var commands = {
         add: function(kvs) {
-            var x = kvs.x;
-            var y = kvs.y;
+            var x = parseFloat(kvs.x);
+            var y = parseFloat(kvs.y);
             self.addPoint([x, y]);            
         },
         zoom: function(kvs) {
@@ -153,6 +151,7 @@ Graphite.Controller = function() {
                 var state = history.pop();
                 model = state.model;
                 plotOptions = state.plotOptions;
+                model.fit();
                 updateAll();
             }
         },
@@ -163,6 +162,11 @@ Graphite.Controller = function() {
             var colors = ["red", "orange", "yellow", "green", "blue", "purple"];
             var i = kvs.thecolor - 1;
             self.color(colors[i]);
+        },
+        fit: function(kvs) {
+            var fits = ["off", "linear", "quadratic", "cubic", "exponential"];
+            var i = kvs.thefit;
+            self.fit(fits[i]);
         }
     };
 
@@ -212,10 +216,7 @@ Graphite.Controller = function() {
 
     this.invert = function() {
         saveState();
-        $.each(model.data.data, function(i, n) {
-            var x = n[0]; var y = n[1];
-            model.data.data[i] = [n[1], n[0]];
-        });
+        model.invert();
         updateAll();
     };
 
@@ -224,6 +225,12 @@ Graphite.Controller = function() {
         model.data.color = color;
         updateAll();
 
+    };
+
+    this.fit = function(type) {
+        saveState();
+        model.fit(type);
+        updateAll();
     };
 
     bindHandlers();

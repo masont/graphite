@@ -6,7 +6,8 @@ public <top> = (<command> [and])+;
                 | <find> | <invert>
                 | <color> | <fit>;
 <fit>        = fit {[command=fit]} (<thefit>);
-<thefit>     = linear {[thefit=1]}
+<thefit>     = off {[thefit=0]}
+               | linear {[thefit=1]}
                | quadratic {[thefit=2]}
                | cubic     {[thefit=3]}
                | exponential {[thefit=4]};
