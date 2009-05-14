@@ -228,7 +228,6 @@ Graphite.Controller = function() {
     };
 
     this.fit = function(type) {
-        saveState();
         model.fit(type);
         updateAll();
     };
