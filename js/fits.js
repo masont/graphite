@@ -8,7 +8,6 @@
 
  Graphite.Fits = {
      linear: function(ps) {
-         console.log(ps);
          var xs = $.map(ps, first); var ys = $.map(ps, second);
          var meanX = mean(xs); var meanY = mean(ys);
 

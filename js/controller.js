@@ -44,8 +44,15 @@ Graphite.Controller = function() {
 
     var plot = $.plot($("#flot-root"), [model.data, model.fit], plotOptions); 
 
+    var old = -1;
+
     var bindHandlers = function() {
         $("#flot-root").bind("plotselected", function(event, ranges) {
+
+            if (old >= 0) {
+                plot.unhighlight(0, old); old = -1; 
+            }
+            
             selection = {};
             selection.ranges = ranges;
             selection.points = [];
@@ -67,6 +74,14 @@ Graphite.Controller = function() {
         });
 
         $("#flot-root").bind("plotclick", function(event, pos, point) {
+            if (old >= 0) {
+                plot.unhighlight(0, old); old = -1; 
+            }
+            if (selection != null) {
+                plot.clearSelection();
+                selection = null;
+                return;
+            }
             self.addPoint([pos.x, pos.y]);
         });
 
@@ -93,11 +108,13 @@ Graphite.Controller = function() {
                           .appendTo("#data-table tbody")
                           .attr("id", "row-" + i);
 
-            if (i % 2 == 1) row.addClass("even"); 
+            if (i % 2 == 1) { row.addClass("even") }; 
         });
     };
 
     var updatePlot = function() {
+        plot.clearSelection(false);
+        selection = null;
         plot.setData([model.data, model.fit]);
         plot.setupGrid();
         plot.draw();
@@ -125,20 +142,19 @@ Graphite.Controller = function() {
         },
         zoom: function(kvs) {
             var direction = kvs.direction;
-            if (direction == 0) {
-                self.zoomReset();
-            } else if (direction == 1  && selection.ranges) {
+            if (direction == 1  && selection.ranges) {
                 var ranges = selection.ranges;
                 self.zoomToRange(ranges.xaxis.from, ranges.xaxis.to,
                                  ranges.yaxis.from, ranges.yaxis.to);
             } else if (direction == 1) {
 
             } else if (direction == 2) {
+                self.zoomReset();
 
             }
             
         },
-        delete: function(kvs) {
+        "delete": function(kvs) {
             var extent = kvs.extent;
             if (extent == 2 && selection) {
                 self.deletePoints(selection.points);                
@@ -167,6 +183,11 @@ Graphite.Controller = function() {
             var fits = ["off", "linear", "quadratic", "cubic", "exponential"];
             var i = kvs.thefit;
             self.fit(fits[i]);
+        },
+        find: function(kvs) {
+            var type = ["max", "min"];
+            var i = kvs.maxmin - 1;
+            self.find(type[i]);
         }
     };
 
@@ -230,6 +251,14 @@ Graphite.Controller = function() {
     this.fit = function(type) {
         model.fit(type);
         updateAll();
+    };
+
+    this.find = function(type) {
+        var i = model.find(type);
+        console.log(i);
+        if (old >= 0) { plot.unhighlight(0, old); }
+        plot.highlight(0, i);
+        old = i;
     };
 
     bindHandlers();

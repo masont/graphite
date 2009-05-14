@@ -1,1 +1,1 @@
-window.Graphite = {};
+var Graphite = {};

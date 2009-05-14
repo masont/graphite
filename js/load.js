@@ -41,7 +41,7 @@ $(document).ready(function() {
             configOptions,
             grammarOptions
         );
-    }
+    };
     
     $.get("jsgf.txt", {}, loadWami, "text");
 

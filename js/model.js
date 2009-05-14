@@ -11,7 +11,7 @@ Graphite.Model = function() {
 
     this.fit = {
         type: "off",
-        color: "gray",
+        color: "#eee",
         data: [],
         points: { show: false },
         lines: { show: true }   
@@ -34,7 +34,7 @@ Graphite.Model = function() {
                 j = i;
             }
         });
-        if (j < 0) return;
+        if (j < 0) { return; }
         this.data.data.splice(j, 1);
         this.fit();
     };
@@ -54,7 +54,7 @@ Graphite.Model = function() {
     };
 
     this.fit = function(type) {
-        if (type == null) {
+        if (type === null) {
             type = this.fit.type;
         } else {
             this.fit.type = type;
@@ -76,4 +76,30 @@ Graphite.Model = function() {
         }
     };
 
-}
+    this.find = function(type) {
+        var ps = this.data.data;
+        if (ps.length < 1) { return null; }
+        if (type == "max") {
+            var j = 0; 
+            var max = ps[j][1];
+            for (i = 1; i < ps.length; i++) {
+                if (ps[i][1] > max) {
+                    j = i;
+                    max = ps[j][1];
+                }
+            }
+            return j;
+        } else if (type == "min") {
+            var j = 0; 
+            var min = ps[j][1];
+            for (i = 1; i < ps.length; i++) {
+                if (ps[i][1] < min) {
+                    j = i;
+                    min = ps[j][1];
+                }
+            }
+            return j;
+        }
+    };
+
+};
