@@ -9,7 +9,7 @@ $(document).ready(function() {
 
         graphiteController.addPoint([x, y]);
 
-        $("#add-x").val("");
+        $("#add-x").val("").focus();
         $("#add-y").val("");
         return false;
     });
@@ -160,7 +160,9 @@ Graphite.Controller = function() {
             self.invert();
         },
         color: function(kvs) {
-
+            var colors = ["red", "orange", "yellow", "green", "blue", "purple"];
+            var i = kvs.thecolor - 1;
+            self.color(colors[i]);
         }
     };
 
@@ -215,6 +217,13 @@ Graphite.Controller = function() {
             model.data.data[i] = [n[1], n[0]];
         });
         updateAll();
+    };
+
+    this.color = function(color) {
+        saveState();
+        model.data.color = color;
+        updateAll();
+
     };
 
     bindHandlers();
