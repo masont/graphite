@@ -1,0 +1,70 @@
+#JSGF V1.0;
+grammar GraphiteCommands;
+public <top> = (<command> [and])+;
+<command>    =  <add> | <zoom>
+                | <delete> | <undo>
+                | <find> | <invert>
+                | <color> | <fit>;
+<fit>        = fit {[command=fit]} (<thefit>);
+<thefit>     = linear {[thefit=1]}
+               | quadratic {[thefit=2]}
+               | cubic     {[thefit=3]}
+               | exponential {[thefit=4]};
+<color>      = color {[command=color]} (<thecolor>);
+<thecolor>   = red {[thecolor=1]}
+               | orange {[thecolor=2]}
+               | yellow {[thecolor=3]}
+               | green {[thecolor=4]}
+               | blue {[thecolor=5]}
+               | purple {[thecoor=6]};
+<invert>     = invert {[command=invert]};
+<find>       = find {[command=find]} (<maxmin>);
+<maxmin>     = max {[maxmin=1]} | min {[maxmin=2]};
+<undo>       = undo {[command=undo]};
+<delete>     = delete {[command=delete]} (<extent>);
+<extent>     = all {[extent=1]} | selected {[extent=2]};
+<zoom>       = zoom {[command=zoom]} (<direction>);
+<direction>  = reset {[direction=0]} | in {[direction=1]} | out {[direction=2]};
+<add>         = add {[command=add]} (<x>+ (comma <y>)+)+;
+<x>          = one {[x=1]}
+        | two {[x=2]}
+        | three   {[x=3]}
+        | four    {[x=4]} 
+        | five {[x=5]}
+        | six {[x=6]}
+        | seven   {[x=7]}
+        | eight {[x=8]}
+        | nine {[x=9]}
+        | ten {[x=10]}
+        | eleven {[x=11]}
+        | twelve {[x=12]}
+        | thirteen   {[x=13]}
+        | fourteen    {[x=14]} 
+        | fifteen {[x=15]}
+        | sixteen {[x=16]
+        | seventeen   {[x=17]}
+        | eighteen {[x=18]}
+        | nineteen {[x=19]}
+        | twenty {[x=20]};
+<y>          = one {[y=1]}
+        | two {[y=2]}
+        | three   {[y=3]}
+        | four    {[y=4]} 
+        | five {[y=5]}
+        | six {[y=6]}
+        | seven   {[y=7]}
+        | eight {[y=8]}
+        | nine {[y=9]}
+        | ten {[y=10]}
+        | eleven {[y=11]}
+        | twelve {[y=12]}
+        | thirteen   {[y=13]}
+        | fourteen    {[y=14]} 
+        | fifteen {[y=15]}
+        | sixteen {[y=16]
+        | seventeen   {[y=17]}
+        | eighteen {[y=18]}
+        | nineteen {[y=19]}
+        | twenty {[y=20]};
+
+

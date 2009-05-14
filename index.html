@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Graphite: Multimodal Plotting Tool</title>
+    <link rel="stylesheet" href="css/blueprint/screen.css" type="text/css" 
+          media="screen, projection"/>
+    <link rel="stylesheet" href="css/blueprint/print.css" type="text/css" 
+          media="print"/>
+    <!--[if IE]><link rel="stylesheet" href="css/blueprint/ie.css" 
+                      type="text/css" media="screen, projection"/><![endif]-->
+    <script type="text/javascript" src="http://wami.csail.mit.edu:8080/portal/wami.js?devKey=f7067cc869af3427dfbf24962c7262a6"></script>
+
+    <script type="text/javascript" src="js/lib/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="js/lib/processing.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.flot.pack.js"></script>
+    <!--[if IE]><script type="text/javascript" src="js/lib/excanvas.pack.js"></script><![endif]-->
+
+    <script type="text/javascript" src="js/graphite.js"></script>
+    <script type="text/javascript" src="js/model.js"></script>
+    <script type="text/javascript" src="js/controller.js"></script>
+    <script type="text/javascript" src="js/load.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Graphite</h1>
+      <div id="main-col" class="span-17">
+        <div id="flot-root" class="span-17">
+          Flot!
+        </div>
+      </div>
+      <div id="right-col" class="span-7 last">
+        <div id="wami-root">
+
+        </div>
+        <hr class="space"/>
+        <div id="recognition-result">
+        </div>
+        <div id="table-root">
+          <table id="data-table" class="span-7">
+            <thead>
+              <tr>
+                <th>X</th><th>Y</th><th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="3">No data</td></tr>
+            </tbody>
+            <tfoot>
+              <form id="add-row-form" method="get" action="">
+                <tr id="add-row">
+                  <td>
+                    <input type="text" id="add-x" name="x" size="3"/>
+                  </td>
+                  <td>
+                    <input type="text" id="add-y" name="y" size="3"/>
+                  </td>
+                  <td>
+                    <input type="submit" name="Add" value="Add"/>
+                  </td>
+                </tr>
+              </form>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
